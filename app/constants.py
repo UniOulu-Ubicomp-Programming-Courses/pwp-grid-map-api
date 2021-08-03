@@ -1,0 +1,6 @@
+JSON = "application/json"
+MASON = "application/vnd.mason+json"
+MAP_PROFILE = "/profiles/map/"
+OBSERVER_PROFILE = "/profiles/observer/"
+OBSTACLE_PROFILE = "/profiles/obstacle/"
+LINK_RELATIONS = "/link-relations/"
