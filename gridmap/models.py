@@ -7,9 +7,9 @@ corresponding to the model.
 """
 
 from flask import url_for
-from app import db
-from app.constants import MAP_PROFILE, OBSERVER_PROFILE
-from app.utils import MapBuilder
+from gridmap import db
+from gridmap.constants import MAP_PROFILE, OBSERVER_PROFILE
+from gridmap.utils import MapBuilder
 from slugify import slugify
 
 

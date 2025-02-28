@@ -1,0 +1,59 @@
+responses:
+  '200':
+    content:
+      application/json:
+        map_name: Test Map 1
+        map_slug: test-map-1
+        name: Test Observer 0
+        slug: test-observer-0
+        vision: null
+        x: 1
+        y: 1
+      application/vnd.mason+json:
+        '@controls':
+          edit:
+            encoding: json
+            href: /api/maps/test-map-1/observers/test-observer-0/
+            method: PUT
+            schema:
+              properties:
+                name:
+                  description: Name for referencing the observer (unique per map)
+                  maxLength: 32
+                  type: string
+                vision:
+                  description: Observer's vision range (infinite if omitted)
+                  minimum: 0
+                  type: number
+                x:
+                  description: Observer's x coordinate
+                  minimum: 0
+                  type: integer
+                y:
+                  description: Observer's y coordinate
+                  minimum: 0
+                  type: integer
+              required:
+              - name
+              - x
+              - y
+              type: object
+            title: Update this observer
+          profile:
+            href: /profiles/observer/
+          pwp-map:delete:
+            href: /api/maps/test-map-1/observers/test-observer-0/
+            method: DELETE
+            title: Delete this observer
+          self:
+            href: /api/maps/test-map-1/observers/test-observer-0/
+          up:
+            href: /api/maps/test-map-1/
+        '@namespaces':
+          pwp-map:
+            name: /link-relations/
+        name: Test Observer 0
+        slug: test-observer-0
+        vision: null
+        x: 1
+        y: 1

@@ -1,0 +1,13 @@
+[project]
+name = "GridMapAPI"
+version = "1.0.0"
+dependencies = [
+    "flask",
+    "flask-restful",
+    "flask-sqlalchemy",
+    "flask-caching",
+    "flask-accept",
+    "jsonschema",
+    "SQLAlchemy",
+    "python-slugify"
+]

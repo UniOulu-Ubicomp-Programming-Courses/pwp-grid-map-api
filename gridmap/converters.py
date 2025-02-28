@@ -14,7 +14,7 @@ will take care of placing a convertible value into the URI.
 
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
-from app.models import Map, Observer, Obstacle
+from gridmap.models import Map, Observer, Obstacle
 
 class MapConverter(BaseConverter):
     """

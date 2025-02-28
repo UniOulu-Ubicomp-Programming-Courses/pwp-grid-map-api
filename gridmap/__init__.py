@@ -24,10 +24,12 @@ def create_app(test_config=None):
     
     # Default configuration
     app.config.from_mapping(
+        SERVER_NAME="localhost",
         SECRET_KEY="dev",
         SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "development.db"),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        CACHE_TYPE="SimpleCache"
+        CACHE_TYPE="SimpleCache",
+
     )
     
     # Configuration overrides from config file
@@ -50,7 +52,9 @@ def create_app(test_config=None):
     from . import management
     from . import converters
     app.cli.add_command(management.init_db_command)
-    app.cli.add_command(management.generate_test_data)    
+    app.cli.add_command(management.generate_test_data)
+    app.cli.add_command(management.update_schemas)
+    app.cli.add_command(management.update_get_docs)
     app.url_map.converters["map"] = converters.MapConverter
     app.url_map.converters["observer"] = converters.ObserverConverter
     app.register_blueprint(api.api_bp)

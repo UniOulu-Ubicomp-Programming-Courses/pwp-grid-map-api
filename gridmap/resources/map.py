@@ -9,10 +9,10 @@ from flask_restful import Resource
 from flask_accept import accept
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
-from app import cache, db
-from app.constants import JSON, MASON, MAP_PROFILE, LINK_RELATIONS
-from app.models import Map, Observer, Obstacle
-from app.utils import MapBuilder
+from gridmap import cache, db
+from gridmap.constants import JSON, MASON, MAP_PROFILE, LINK_RELATIONS
+from gridmap.models import Map, Observer, Obstacle
+from gridmap.utils import MapBuilder
 
 
 class MapCollection(Resource):
@@ -45,7 +45,6 @@ class MapCollection(Resource):
         contents.
         """
         
-        print(request.path)
         items = []
         for db_map in Map.query.all():
             items.append(db_map.serialize())
@@ -160,7 +159,7 @@ class MapItem(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
         
     @get.support("application/vnd.mason+json")
-    @cache.cached(timeout=None, key_prefix="json-view/%s")
+    @cache.cached(timeout=None, key_prefix="mason-view/%s")
     def get_mason(self, map):
         """
         The GET method for Mason. Returns a dictionary with map attributes, and

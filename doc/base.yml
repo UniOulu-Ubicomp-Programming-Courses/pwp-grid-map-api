@@ -1,0 +1,104 @@
+components:
+  parameters:
+    map:
+      description: Map name slug
+      in: path
+      name: map
+      required: true
+      schema:
+        type: string
+    observer:
+      description: Observer name slug
+      in: path
+      name: observer
+      required: true
+      schema:
+        type: string
+    x:
+      description: x coordinate of an object
+      in: path
+      name: x
+      required: true
+      schema:
+        type: integer
+    y:
+      description: y coordinate of an object
+      in: path
+      name: y
+      required: true
+      schema:
+        type: integer
+  schemas:
+    Map:
+      properties:
+        height:
+          description: Map height
+          minimum: 1
+          type: integer
+        name:
+          description: Name for the map (unique)
+          maxLength: 32
+          type: string
+        width:
+          description: Map width
+          minimum: 1
+          type: integer
+      required:
+      - name
+      - width
+      - height
+      type: object
+    Observer:
+      properties:
+        name:
+          description: Name for referencing the observer (unique per map)
+          maxLength: 32
+          type: string
+        vision:
+          description: Observer's vision range (infinite if omitted)
+          minimum: 0
+          type: number
+        x:
+          description: Observer's x coordinate
+          minimum: 0
+          type: integer
+        y:
+          description: Observer's y coordinate
+          minimum: 0
+          type: integer
+      required:
+      - name
+      - x
+      - y
+      type: object
+    Obstacle:
+      properties:
+        x:
+          description: Obstacles's x coordinate (closest to origin)
+          minimum: 0
+          type: integer
+        y:
+          description: Obstacles's y coordinate (closest to origin)
+          minimum: 0
+          type: integer
+      required:
+      - x
+      - y
+      type: object
+info:
+  contact:
+    email: pwp-course@lists.oulu.fi
+    name: PWP Staff List
+    url: http://totally.not.placehold.er/
+  description: |
+    This is an API example used in the Programmable Web Project course.
+    It stores data about grid based maps
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://totally.not.placehold.er/
+  title: GridMap Example
+  version: 0.0.1
+openapi: 3.0.3
+servers:
+- url: /api

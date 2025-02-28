@@ -9,9 +9,9 @@ from flask_restful import Resource
 from flask_accept import accept
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
-from app import cache, db
-from app.constants import JSON, MASON, MAP_PROFILE
-from app.models import Obstacle
+from gridmap import cache, db
+from gridmap.constants import JSON, MASON, MAP_PROFILE
+from gridmap.models import Obstacle
 
 class ObstacleItem(Resource):
     """

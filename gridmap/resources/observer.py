@@ -9,10 +9,10 @@ from flask_restful import Resource
 from flask_accept import accept
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
-from app import cache, db
-from app.constants import JSON, MASON, OBSERVER_PROFILE, LINK_RELATIONS
-from app.models import Map, Observer, Obstacle
-from app.utils import MapBuilder
+from gridmap import cache, db
+from gridmap.constants import JSON, MASON, OBSERVER_PROFILE, LINK_RELATIONS
+from gridmap.models import Map, Observer, Obstacle
+from gridmap.utils import MapBuilder
 
 class ObserverItem(Resource):
     """
