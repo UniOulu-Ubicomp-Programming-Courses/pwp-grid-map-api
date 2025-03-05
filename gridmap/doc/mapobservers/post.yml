@@ -1,0 +1,13 @@
+---
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: '#/components/schemas/Observer'
+responses:
+  '201':
+    headers:
+      Location:
+        description: URI of the created resource
+        schema:
+          type: string

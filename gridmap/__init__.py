@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
+from flasgger import Swagger
 
 db = SQLAlchemy()
 cache = Cache()
@@ -29,7 +30,12 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "development.db"),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         CACHE_TYPE="SimpleCache",
-
+        SWAGGER={
+            "title": "Sensorhub API",
+            "openapi": "3.0.4",
+            "uiversion": 3,
+            "doc_dir": "gridmap/doc"
+        }
     )
     
     # Configuration overrides from config file
@@ -54,9 +60,10 @@ def create_app(test_config=None):
     app.cli.add_command(management.init_db_command)
     app.cli.add_command(management.generate_test_data)
     app.cli.add_command(management.update_schemas)
-    app.cli.add_command(management.update_get_docs)
+    app.cli.add_command(management.update_docs)
     app.url_map.converters["map"] = converters.MapConverter
     app.url_map.converters["observer"] = converters.ObserverConverter
     app.register_blueprint(api.api_bp)
+    swagger = Swagger(app, template_file="doc/base.yml")
     
     return app

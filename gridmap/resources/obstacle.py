@@ -22,6 +22,8 @@ class ObstacleItem(Resource):
     requested map slug. Not Found (404) is raised from the converter if the
     slug doesn't correspond to an existing map.
     """
+
+    model = Obstacle
     
     def _clean_cache(self, parent):
         """

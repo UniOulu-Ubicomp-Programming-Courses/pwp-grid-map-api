@@ -80,64 +80,128 @@ def generate_test_data():
 @click.command("update-schemas")
 def update_schemas():
 
-    with open("doc/base.yml") as source:
+    with open("gridmap/doc/base.yml") as source:
         doc = yaml.safe_load(source)
     schemas = doc["components"]["schemas"] = {}
     for cls in [Map, Observer, Obstacle]:
         schemas[cls.__name__] = cls.json_schema()
 
     doc["info"]["description"] = literal_unicode(doc["info"]["description"])
-    with open("doc/base.yml", "w") as target:
+    with open("gridmap/doc/base.yml", "w") as target:
+        target.write("---\n")
         target.write(yaml.dump(doc, default_flow_style=False))
 
-@click.command("get-docs")
+@click.command("update-docs")
 @with_appcontext
-def update_get_docs():
-    DOC_ROOT = "./doc/"
-    DOC_TEMPLATE = {
+def update_docs():
+    DOC_ROOT = "./gridmap/doc/"
+    GET_TEMPLATE = {
         "responses": {
             "200": {
-                "content": {}
+                "content": {
+                    "application/json": {},
+                    "application/vnd.mason+json": {}
+                }
+            }
+        }
+    }
+    POST_PUT_TEMPLATE = {
+        "requestBody": {
+            "content": {
+                "application/json": {
+                    "schema": {}
+                }
+            }
+        }
+    }
+    POST_TEMPLATE = POST_PUT_TEMPLATE.copy()
+    POST_TEMPLATE["responses"] = {
+        "201": {
+            "headers": {
+                "Location": {
+                    "description": "URI of the created resource",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+    DELETE_TEMPLATE = {
+        "responses": {
+            "204": {
+                "description": "Successfully deleted"
+            },
+            "404": {
+                "description": "Object not found"
             }
         }
     }
 
     resource_classes = [
-        map.MapCollection, map.MapItem,
-        observer.ObserverItem
+        map.MapCollection, map.MapItem, map.MapObservers, map.MapObstacles,
+        observer.ObserverItem,
+        obstacle.ObstacleItem,
     ]
 
     client = current_app.test_client()
 
-    for cls in resource_classes:
-        endpoint = cls.__name__.lower()
-        doc_path = os.path.join(DOC_ROOT, endpoint, "get.yml")
-        os.makedirs(os.path.dirname(doc_path), exist_ok=True)
-        if os.path.exists(doc_path):
-            with open(doc_path) as source:
+    def read_or_create(path, template={}):
+        if os.path.exists(path):
+            with open(path) as source:
                 doc = yaml.safe_load(source)
         else:
-            doc = copy.deepcopy(DOC_TEMPLATE)
+            doc = copy.deepcopy(template)
 
-        uri = url_for(
-            "api." + endpoint,
-            map=Map(**TEST_MAP),
-            observer=Observer(**OBSERVERS[0]),
-            x=OBSTACLES[0][0],
-            y=OBSTACLES[0][1],
-        )
-        doc["responses"]["200"]["content"]["application/json"] = client.get(
-            uri, headers={"Accept": "application/json"}
-        ).json
-        doc["responses"]["200"]["content"]["application/vnd.mason+json"] = client.get(
-            uri, headers={"Accept": "application/vnd.mason+json"}
-        ).json
-        with open(doc_path, "w") as target:
+        return doc
+
+    def write_doc(path, content):
+        with open(path, "w") as target:
+            target.write("---\n")
             target.write(yaml.dump(doc, default_flow_style=False))
 
+    for cls in resource_classes:
+        endpoint = cls.__name__.lower()
+        endpoint_path = os.path.join(DOC_ROOT, endpoint)
+        os.makedirs(endpoint_path, exist_ok=True)
+        if hasattr(cls, "get"):
+            doc_path = os.path.join(endpoint_path, "get.yml")
+            doc = read_or_create(doc_path, GET_TEMPLATE)
+            uri = url_for(
+                "api." + endpoint,
+                map=Map(**TEST_MAP),
+                observer=Observer(**OBSERVERS[0]),
+                x=OBSTACLES[0][0],
+                y=OBSTACLES[0][1],
+            )
+            doc["responses"]["200"]["content"]["application/json"]["example"] = client.get(
+                uri, headers={"Accept": "application/json"}
+            ).json
+            doc["responses"]["200"]["content"]["application/vnd.mason+json"]["example"] = client.get(
+                uri, headers={"Accept": "application/vnd.mason+json"}
+            ).json
+            write_doc(doc_path, doc)
 
+        if hasattr(cls, "post"):
+            doc_path = os.path.join(endpoint_path, "post.yml")
+            doc = read_or_create(doc_path, POST_TEMPLATE)
+            doc["requestBody"]["content"]["application/json"]["schema"]["$ref"] = (
+                f"#/components/schemas/{cls.child_model.__name__}"
+            )
+            write_doc(doc_path, doc)
 
+        if hasattr(cls, "put"):
+            doc_path = os.path.join(endpoint_path, "put.yml")
+            doc = read_or_create(doc_path, POST_PUT_TEMPLATE)
+            doc["requestBody"]["content"]["application/json"]["schema"]["$ref"] = (
+                f"#/components/schemas/{cls.model.__name__}"
+            )
+            write_doc(doc_path, doc)
 
+        if hasattr(cls, "delete"):
+            doc_path = os.path.join(endpoint_path, "delete.yml")
+            doc = read_or_create(doc_path, DELETE_TEMPLATE)
+            write_doc(doc_path, doc)
 
 
 

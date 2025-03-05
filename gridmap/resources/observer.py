@@ -6,7 +6,7 @@ import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from flask_accept import accept
+from flask_accept import accept, accept_fallback
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
 from gridmap import cache, db
@@ -28,6 +28,8 @@ class ObserverItem(Resource):
     slugs don't correspond to existing resources.
     """
     
+    model = Observer
+
     def _clean_cache(self, parent):
         """
         Deletes cached observer from the cache, and the map that contains it. 
@@ -44,7 +46,7 @@ class ObserverItem(Resource):
             f"mason-view/{request.path}"
         ))
     
-    @accept("application/json")
+    @accept_fallback
     @cache.cached(timeout=None, key_prefix="json-view/%s")
     def get(self, map, observer):
         """

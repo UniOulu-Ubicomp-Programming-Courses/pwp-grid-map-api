@@ -6,7 +6,7 @@ import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from flask_restful import Resource
-from flask_accept import accept
+from flask_accept import accept, accept_fallback
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
 from gridmap import cache, db
@@ -24,6 +24,8 @@ class MapCollection(Resource):
     document using Mason.
     """
     
+    child_model = Map
+
     def _clean_cache(self):
         """
         Deletes cached map collection from the cache. This method is called by
@@ -35,7 +37,7 @@ class MapCollection(Resource):
             f"mason-view/{request.path}"
         ))
     
-    @accept("application/json")
+    @accept_fallback
     @cache.cached(timeout=None, key_prefix="json-view/%s")
     def get(self):
         """
@@ -129,6 +131,8 @@ class MapItem(Resource):
     operations are handled by the auxiliary resources MapObservers and
     MapObstacles.
     """
+
+    model = Map
     
     def _clean_cache(self):
         """
@@ -145,7 +149,7 @@ class MapItem(Resource):
             f"mason-view/{request.path}"
         ))
 
-    @accept("application/json")
+    @accept_fallback
     @cache.cached(timeout=None, key_prefix="json-view/%s")
     def get(self, map):
         """
@@ -228,6 +232,8 @@ class MapObservers(Resource):
     This resource implements the POST method for adding observers to a map.
     """
     
+    child_model = Observer
+
     def _clean_cache(self, parent):
         """
         Deletes cached map from the cache. This method is called by the post
@@ -285,6 +291,8 @@ class MapObstacles(Resource):
     """
     This resource implements the POST method for adding observers to a map.
     """
+
+    child_model = Obstacle
 
     def _clean_cache(self, parent):
         """

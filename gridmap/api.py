@@ -11,13 +11,14 @@ from gridmap.resources import map, observer, obstacle
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 api = Api(api_bp)
 
-api.add_resource(map.MapCollection, "/maps/")
-api.add_resource(map.MapItem, "/maps/<map:map>/")
+api.add_resource(map.MapCollection, "/maps/", endpoint="mapcollection")
+api.add_resource(map.MapItem, "/maps/<map:map>/", endpoint="mapitem")
 api.add_resource(map.MapObservers, "/maps/<map:map>/observers/")
 api.add_resource(map.MapObstacles, "/maps/<map:map>/obstacles/")
 api.add_resource(
     observer.ObserverItem,
-    "/maps/<map:map>/observers/<observer:observer>/"
+    "/maps/<map:map>/observers/<observer:observer>/",
+    endpoint="observeritem"
 )
 api.add_resource(
     obstacle.ObstacleItem,

@@ -1,0 +1,193 @@
+---
+responses:
+  '200':
+    content:
+      application/json:
+        example:
+          height: 80
+          name: Test Map 1
+          observers:
+          - name: Test Observer 0
+            slug: test-observer-0
+            vision: null
+            x: 1
+            y: 1
+          - name: Test Observer 1
+            slug: test-observer-1
+            vision: null
+            x: 40
+            y: 40
+          - name: Test Observer 2
+            slug: test-observer-2
+            vision: null
+            x: 80
+            y: 20
+          - name: Test Observer 3
+            slug: test-observer-3
+            vision: null
+            x: 10
+            y: 70
+          obstacles:
+          - x: 5
+            y: 5
+          - x: 20
+            y: 20
+          - x: 50
+            y: 50
+          - x: 70
+            y: 70
+          slug: test-map-1
+          width: 100
+      application/vnd.mason+json:
+        example:
+          '@controls':
+            collection:
+              href: /api/maps/
+            edit:
+              encoding: json
+              href: /api/maps/test-map-1/
+              method: PUT
+              schema:
+                properties:
+                  height:
+                    description: Map height
+                    minimum: 1
+                    type: integer
+                  name:
+                    description: Name for the map (unique)
+                    maxLength: 32
+                    type: string
+                  width:
+                    description: Map width
+                    minimum: 1
+                    type: integer
+                required:
+                - name
+                - width
+                - height
+                type: object
+              title: Update this map
+            profile:
+              href: /profiles/map/
+            pwp-map:create-observer:
+              encoding: json
+              href: /api/maps/test-map-1/observers/
+              method: POST
+              schema:
+                properties:
+                  name:
+                    description: Name for referencing the observer (unique per map)
+                    maxLength: 32
+                    type: string
+                  vision:
+                    description: Observer's vision range (infinite if omitted)
+                    minimum: 0
+                    type: number
+                  x:
+                    description: Observer's x coordinate
+                    minimum: 0
+                    type: integer
+                  y:
+                    description: Observer's y coordinate
+                    minimum: 0
+                    type: integer
+                required:
+                - name
+                - x
+                - y
+                type: object
+              title: Place a new observer on this map
+            pwp-map:create-obstacle:
+              encoding: json
+              href: /api/maps/test-map-1/obstacles/
+              method: POST
+              schema:
+                properties:
+                  x:
+                    description: Obstacles's x coordinate (closest to origin)
+                    minimum: 0
+                    type: integer
+                  y:
+                    description: Obstacles's y coordinate (closest to origin)
+                    minimum: 0
+                    type: integer
+                required:
+                - x
+                - y
+                type: object
+              title: Place a new obstacle on this map
+            pwp-map:delete:
+              href: /api/maps/test-map-1/
+              method: DELETE
+              title: Delete this map
+            self:
+              href: /api/maps/test-map-1/
+          '@namespaces':
+            pwp-map:
+              name: /link-relations/
+          height: 80
+          name: Test Map 1
+          observers:
+          - '@controls':
+              self:
+                href: /api/maps/test-map-1/observers/test-observer-0/
+            name: Test Observer 0
+            slug: test-observer-0
+            vision: null
+            x: 1
+            y: 1
+          - '@controls':
+              self:
+                href: /api/maps/test-map-1/observers/test-observer-1/
+            name: Test Observer 1
+            slug: test-observer-1
+            vision: null
+            x: 40
+            y: 40
+          - '@controls':
+              self:
+                href: /api/maps/test-map-1/observers/test-observer-2/
+            name: Test Observer 2
+            slug: test-observer-2
+            vision: null
+            x: 80
+            y: 20
+          - '@controls':
+              self:
+                href: /api/maps/test-map-1/observers/test-observer-3/
+            name: Test Observer 3
+            slug: test-observer-3
+            vision: null
+            x: 10
+            y: 70
+          obstacles:
+          - '@controls':
+              pwp-map:delete:
+                href: /api/maps/test-map-1/obstacles/5/5/
+                method: DELETE
+                title: Delete this obstacle
+            x: 5
+            y: 5
+          - '@controls':
+              pwp-map:delete:
+                href: /api/maps/test-map-1/obstacles/20/20/
+                method: DELETE
+                title: Delete this obstacle
+            x: 20
+            y: 20
+          - '@controls':
+              pwp-map:delete:
+                href: /api/maps/test-map-1/obstacles/50/50/
+                method: DELETE
+                title: Delete this obstacle
+            x: 50
+            y: 50
+          - '@controls':
+              pwp-map:delete:
+                href: /api/maps/test-map-1/obstacles/70/70/
+                method: DELETE
+                title: Delete this obstacle
+            x: 70
+            y: 70
+          slug: test-map-1
+          width: 100
